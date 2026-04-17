@@ -12,11 +12,14 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 ## Current state
 
-The project is in early scaffolding. What exists:
+The project has a working config → client → entry point pipeline:
 
-- `main.py` — makes a working Responses API call to `gpt-5.4-mini`. Still uses `load_dotenv()` directly; has not been refactored to use `config.py` yet.
-- `src/agent/config.py` — a clean `pydantic-settings` `Settings` class using Pydantic v2 style (`model_config = {"env_file": ".env"}`). Exposes `openai_api_key` and `model`. No `__init__.py` files exist yet under `src/agent/`.
-- `pydantic` and `pydantic-settings` are installed as dependencies.
+- `main.py` — thin entry point. Imports `get_response` from `agent.llm.client`, calls it in a `main()` function with `__name__` guard.
+- `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
+- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Creates an `OpenAI` client using `settings.openai_api_key`, exposes `get_response()`. Prompt is still hardcoded — needs a `prompt` parameter next.
+- `src/agent/__init__.py` and `src/agent/llm/__init__.py` exist so the package is importable.
+- `pyproject.toml` has `[tool.setuptools.packages.find] where = ["src"]` so `uv run` resolves the `agent` package.
+- `.claude/hooks/` — `SessionStart` and `SessionEnd` hooks that auto-update CLAUDE.md via headless `claude -p`.
 
 ---
 
@@ -61,10 +64,10 @@ p01-react-agent/
 │   └── agent/
 │       ├── __init__.py
 │       ├── loop.py                # ReAct loop (not yet created)
-│       ├── config.py              # pydantic-settings config (exists, has bug)
+│       ├── config.py              # pydantic-settings config (working)
 │       ├── llm/
 │       │   ├── __init__.py
-│       │   └── client.py          # Responses API calls (not yet created)
+│       │   └── client.py          # Responses API calls (working, needs prompt param)
 │       ├── tools/
 │       │   ├── __init__.py
 │       │   ├── registry.py        # tool discovery + JSON schema (not yet created)
@@ -89,11 +92,11 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Add `__init__.py` files** — `src/agent/__init__.py` (and subdirectories as they are created) so the package is importable
-2. **Create `src/agent/llm/client.py`** — move the Responses API call out of `main.py`
-3. **Refactor `main.py`** — make it a thin entry point that imports from `config` and `llm/client`
-4. **Create `models/messages.py`** — Pydantic models for `Message` and `ConversationState`
-5. **Build `loop.py`** — the actual ReAct loop
+1. **Add `prompt` parameter to `get_response()`** — replace the hardcoded prompt so the function is reusable
+2. **Create `models/messages.py`** — Pydantic models for `Message` and `ConversationState`
+3. **Build `loop.py`** — the actual ReAct loop
+4. **Create `tools/registry.py`** — tool discovery + JSON schema generation
+5. **Create `tools/web_search.py`** — first real tool implementation
 
 ---
 
