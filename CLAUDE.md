@@ -2,9 +2,9 @@
 
 ## What this project is
 
-Part of the **Agentic Engineering Bootcamp v2.1** (26 weeks, 21 projects). This is **Project 1, Phase 1: Foundations**.
+Part of the **Agentic Engineering Bootcamp v2.3** (26 weeks, 21 projects). This is **Project 1, Phase 1: Foundations**.
 
-The goal is to build a ReAct (Reasoning + Acting) agent using **raw API calls only — no agent frameworks**. This is intentional: the purpose is to understand what frameworks abstract away before using them in later projects (LangGraph in P5, OpenAI Agents SDK in P7, etc.).
+The goal is to build a ReAct (Reasoning + Acting) agent using **raw API calls only — no agent frameworks** (although some libraries are used). This is intentional: the purpose is to understand what frameworks abstract away before using them in later projects (LangGraph in P5, OpenAI Agents SDK in P7, etc.).
 
 Deliverable: a tool-calling research agent that searches the web, reads URLs, and synthesizes findings into structured reports. Includes a 20-question evaluation suite measuring answer accuracy, hallucination rate, and tool-call efficiency.
 
@@ -14,11 +14,14 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 The project has a working config → client → entry point pipeline:
 
-- `main.py` — thin entry point. Imports `get_response` from `agent.llm.client`, calls it in a `main()` function with `__name__` guard.
+- `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Imports `get_response` from `agent.llm.client`.
 - `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
-- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Creates an `OpenAI` client using `settings.openai_api_key`, exposes `get_response()`. Prompt is still hardcoded — needs a `prompt` parameter next.
-- `src/agent/__init__.py` and `src/agent/llm/__init__.py` exist so the package is importable.
-- `pyproject.toml` has `[tool.setuptools.packages.find] where = ["src"]` so `uv run` resolves the `agent` package.
+- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Creates an `OpenAI` client using `settings.openai_api_key`, exposes `get_response(user_prompt: str)` which passes the prompt through to the API.
+- `src/agent/models/messages.py` — Pydantic models for `Message` and `ConversationState` utilizing modern Python 3.10+ typing (`| None` and lowercase `list`).
+- `src/agent/loop.py` — exists but not yet wired in.
+- `src/agent/__init__.py`, `src/agent/llm/__init__.py`, and `src/agent/models/__init__.py` exist so packages are importable.
+- `pyproject.toml` has package find rules, and the package has been editably installed using `uv pip install -e .` so that the local package resolves natively inside the `.venv`.
+- `.vscode/settings.json` configured with `"python.analysis.extraPaths": ["./src"]` to resolve import errors in VS Code Pylance.
 - `.claude/hooks/` — `SessionStart` and `SessionEnd` hooks that auto-update CLAUDE.md via headless `claude -p`.
 
 ---
@@ -92,11 +95,9 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Add `prompt` parameter to `get_response()`** — replace the hardcoded prompt so the function is reusable
-2. **Create `models/messages.py`** — Pydantic models for `Message` and `ConversationState`
-3. **Build `loop.py`** — the actual ReAct loop
-4. **Create `tools/registry.py`** — tool discovery + JSON schema generation
-5. **Create `tools/web_search.py`** — first real tool implementation
+1. **Build `loop.py`** — implement the actual ReAct loop logic (accepting input, holding history, parsing agent thought/actions, and outputting final responses)
+2. **Create `tools/registry.py`** — tool discovery + JSON schema generation
+3. **Create `tools/web_search.py`** — first real tool implementation
 
 ---
 

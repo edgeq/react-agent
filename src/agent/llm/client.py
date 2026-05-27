@@ -3,10 +3,10 @@ from openai import OpenAI
 
 client = OpenAI(api_key=settings.openai_api_key)
 
-def get_response():
+def get_response(user_prompt: str):
     response = client.responses.create(
         model=settings.model,
-        input="Say hello in a formal 1890s manner. Treat me as if you were a vendor at the 1893 World's Fair in Chicago"
+        input=user_prompt
     )
 
     return response.output_text 
