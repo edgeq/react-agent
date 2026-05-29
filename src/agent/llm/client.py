@@ -10,3 +10,13 @@ def get_response(user_prompt: str):
     )
 
     return response.output_text 
+
+def get_chat_response(messages: list[dict], tools: list[dict] | None = None):
+    kwargs = {
+        "model": settings.model,
+        "input": messages
+    }
+    if tools:
+        kwargs["tools"] = tools
+
+    return client.responses.create(**kwargs)

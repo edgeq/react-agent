@@ -12,13 +12,15 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 ## Current state
 
-The project has a working config → client → entry point pipeline:
+The project has a working config → client → entry point pipeline, with a fully tested ReAct loop:
 
 - `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Imports `get_response` from `agent.llm.client`.
 - `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
-- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Creates an `OpenAI` client using `settings.openai_api_key`, exposes `get_response(user_prompt: str)` which passes the prompt through to the API.
-- `src/agent/models/messages.py` — Pydantic models for `Message` and `ConversationState` utilizing modern Python 3.10+ typing (`| None` and lowercase `list`).
-- `src/agent/loop.py` — exists but not yet wired in.
+- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Exposes `get_response` (string prompts) and `get_chat_response` (handles list of message dicts/tools).
+- `src/agent/models/messages.py` — Pydantic models for `TextMessage`, `FunctionCallItem`, `FunctionCallOutputItem`, and `ConversationState` matching the modern Responses API schema.
+- `src/agent/loop.py` — Fully implemented ReAct loop with support for tool call execution, multi-turn state accumulation, and observation injection (currently stubbed tools).
+- `tests/test_loop.py` — Complete unit test suite verifying simple chat execution and multi-turn tool calling using mock responses.
+- `tests/conftest.py` — Empty conftest setup for pytest.
 - `src/agent/__init__.py`, `src/agent/llm/__init__.py`, and `src/agent/models/__init__.py` exist so packages are importable.
 - `pyproject.toml` has package find rules, and the package has been editably installed using `uv pip install -e .` so that the local package resolves natively inside the `.venv`.
 - `.vscode/settings.json` configured with `"python.analysis.extraPaths": ["./src"]` to resolve import errors in VS Code Pylance.
@@ -95,9 +97,9 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Build `loop.py`** — implement the actual ReAct loop logic (accepting input, holding history, parsing agent thought/actions, and outputting final responses)
-2. **Create `tools/registry.py`** — tool discovery + JSON schema generation
-3. **Create `tools/web_search.py`** — first real tool implementation
+1. **Create `tools/registry.py`** — tool discovery + JSON schema generation
+2. **Create `tools/web_search.py`** — first real tool implementation
+3. **Integrate real tools with `loop.py`**
 
 ---
 
