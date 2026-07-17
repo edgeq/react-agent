@@ -12,16 +12,17 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 ## Current state
 
-The project has a working config → client → entry point pipeline, with a fully tested ReAct loop:
+The project has a working config → client → entry point pipeline, with a fully tested ReAct loop and an in-progress tool registry:
 
 - `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Imports `get_response` from `agent.llm.client`.
 - `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
 - `src/agent/llm/client.py` — wraps the OpenAI Responses API. Exposes `get_response` (string prompts) and `get_chat_response` (handles list of message dicts/tools).
 - `src/agent/models/messages.py` — Pydantic models for `TextMessage`, `FunctionCallItem`, `FunctionCallOutputItem`, and `ConversationState` matching the modern Responses API schema.
 - `src/agent/loop.py` — Fully implemented ReAct loop with support for tool call execution, multi-turn state accumulation, and observation injection (currently stubbed tools).
+- `src/agent/tools/registry.py` (In Progress) — Skeleton of `Tool` class completed; extracts metadata and dynamically builds Pydantic validator models using runtime function inspection.
 - `tests/test_loop.py` — Complete unit test suite verifying simple chat execution and multi-turn tool calling using mock responses.
 - `tests/conftest.py` — Empty conftest setup for pytest.
-- `src/agent/__init__.py`, `src/agent/llm/__init__.py`, and `src/agent/models/__init__.py` exist so packages are importable.
+- `src/agent/__init__.py`, `src/agent/llm/__init__.py`, `src/agent/models/__init__.py`, and `src/agent/tools/__init__.py` exist so packages are importable.
 - `pyproject.toml` has package find rules, and the package has been editably installed using `uv pip install -e .` so that the local package resolves natively inside the `.venv`.
 - `.vscode/settings.json` configured with `"python.analysis.extraPaths": ["./src"]` to resolve import errors in VS Code Pylance.
 - `.claude/hooks/` — `SessionStart` and `SessionEnd` hooks that auto-update CLAUDE.md via headless `claude -p`.
@@ -97,9 +98,13 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Create `tools/registry.py`** — tool discovery + JSON schema generation
-2. **Create `tools/web_search.py`** — first real tool implementation
-3. **Integrate real tools with `loop.py`**
+1. **Complete `tools/registry.py`**:
+   - Implement `_generate_schema()` to format dynamic models into strict OpenAI schemas.
+   - Build the `@tool` decorator to register functions in a global dict.
+   - Implement `execute_tool()` to parse, validate (using the dynamic Pydantic model), and execute tools.
+   - Implement `get_tools_schemas()` to return the registry's formatted schemas.
+2. **Create `tools/web_search.py`** — first real tool implementation.
+3. **Integrate real tools with `loop.py`** (replacing the stub tools).
 
 ---
 
