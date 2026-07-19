@@ -1,6 +1,7 @@
+import json
 import inspect
 from typing import Callable, Any
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, ValidationError
 
 class Tool:
     def __init__(self, func: Callable[..., Any]):
@@ -9,6 +10,7 @@ class Tool:
         self.description = func.__doc__ or ""
 
         self.model = self._create_validator_model()
+        self.schema = self._generate_schema()
 
     def _create_validator_model(self) -> type[BaseModel]:
         sig = inspect.signature(self.func)
@@ -30,19 +32,74 @@ class Tool:
         model_name = f"{self.name.capitalize()}Input"
 
         return create_model(model_name, **fields)
+    
+    def _generate_schema(self) -> dict[str, Any]:
+        pydantic_schema = self.model.model_json_schema()
+        schema_properties = pydantic_schema['properties']
+        open_ai_schema = {
+            "strict": True,
+            "type": "function",
+            "name": self.name,
+            "description": self.description,
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": False,
+            },
+        }
+        for key, value in schema_properties.items():
+            value.pop("title", None)
+            open_ai_schema["parameters"]["properties"][key] = value
+            open_ai_schema["parameters"]["required"].append(key)
+        return open_ai_schema
+
+_registry: dict[str, Tool] = {}
+
+def tool(func: Callable[..., Any]) -> Callable[..., Any]:
+    registered_tool = Tool(func)
+    _registry[registered_tool.name] = registered_tool
+    return func;
+
+def execute_tool(name: str, arguments_json: str) -> str:
+    tool_to_use = _registry.get(name)
+
+    if not tool_to_use:
+        return f"Error: Tool '{name}' not found"
+
+    try:
+        args = json.loads(arguments_json)
+    except Exception as e:
+        return f"Error: Invalid JSON arguments: {str(e)}"
+
+    try:
+        validated_data = tool_to_use.model(**args)
+    except ValidationError as e:
+        return f"Error: Invalid Tool arguments: {str(e)}"
+    
+    try: 
+        result = tool_to_use.func(**validated_data.model_dump())
+        return str(result)
+    except Exception as e:
+        return f"Error executing tool: {str(e)}"
 
 # --- TEMPORARY TEST BLOCK ---
 if __name__ == "__main__":
     # 1. Define a dummy function to test with
+    @tool
     def dummy_tool(query: str, limit: int = 5) -> str:
         """This is a dummy search tool description."""
         return f"Searching for {query} with limit {limit}"
 
-    # 2. Instantiate our Tool wrapper
-    test_tool = Tool(dummy_tool)
+    @tool
+    def prompt_tool(prompt: str) -> str:
+        """This is another tool"""
+        return f"Testing a prompt tool"
 
     # 3. Print the results to see if the inspect code works!
-    print("Tool Name:", test_tool.name)
-    print("Tool Description:", test_tool.description)
-    print("Dynamic Pydantic Model:", test_tool.model)
-    print("Generated Schema:", test_tool.model.model_json_schema())
+    # print("Registered Tools:", list(_registry.keys()))
+    # print("Registered Schema", json.dumps(_registry["prompt_tool"].schema, indent=2))
+    result = execute_tool("dummy_tool", '{"query": "cats", "limit": "10"}')
+    print("Valid Execution Result", result)
+    bad_result = execute_tool("dummy_tool", '{"query": "cats", "limit": "not-an-int"}')
+    print("Invalid Execution Result", bad_result)
