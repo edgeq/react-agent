@@ -89,25 +89,3 @@ def get_tool_schemas() -> list[dict[str, Any]]:
     for _, tool in _registry.items():
         tool_schema_list.append(tool.schema)
     return tool_schema_list
-
-# --- TEMPORARY TEST BLOCK ---
-if __name__ == "__main__":
-    # 1. Define a dummy function to test with
-    @tool
-    def dummy_tool(query: str, limit: int = 5) -> str:
-        """This is a dummy search tool description."""
-        return f"Searching for {query} with limit {limit}"
-
-    @tool
-    def prompt_tool(prompt: str) -> str:
-        """This is another tool"""
-        return f"Testing a prompt tool"
-
-    # 3. Print the results to see if the inspect code works!
-    # print("Registered Tools:", list(_registry.keys()))
-    # print("Registered Schema", json.dumps(_registry["prompt_tool"].schema, indent=2))
-    # result = execute_tool("dummy_tool", '{"query": "cats", "limit": "10"}')
-    # print("Valid Execution Result", result)
-    # bad_result = execute_tool("dummy_tool", '{"query": "cats", "limit": "not-an-int"}')
-    # print("Invalid Execution Result", bad_result)
-    print("All Tool Schemas:", json.dumps(get_tool_schemas(), indent=2))
