@@ -1,4 +1,3 @@
-from agent.llm import client
 from agent.loop import run_agent_loop
 import sys
 

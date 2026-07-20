@@ -19,6 +19,7 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
     )
 
     for _ in range(max_iterations):
+        print(f"\n--- Iteration {_+1}---")
         # 2. Serialize messages for the OpenAI API
         messages_payload = [msg.model_dump(exclude_none=True) for msg in state.messages]
         
@@ -34,6 +35,7 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
         if tool_calls:
             # We have tool calls! Handle them.
             for tool_call in tool_calls:
+                print(f"🔧 Tool Call: {tool_call.name}({tool_call.arguments})")
                 # Add the tool call item to history
                 state.messages.append(
                     FunctionCallItem(
@@ -46,7 +48,8 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
                 
                 # Execute the tool
                 output_str = execute_tool(tool_call.name, tool_call.arguments)
-                
+                # Print a short preview (e.g., first 150 characters) so it doesn't clutter the terminal
+                print(f"👁️  Observation: {output_str[:150]}...")
                 # Add the output (observation) to history
                 state.messages.append(
                     FunctionCallOutputItem(
@@ -59,6 +62,7 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
             
         # 5. If no tool calls, check for final text answer
         if response.output_text:
+            print("\n🏁 Final Answer Found!")
             state.messages.append(
                 TextMessage(role="assistant", content=response.output_text)
             )
