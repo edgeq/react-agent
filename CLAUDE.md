@@ -12,15 +12,16 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 ## Current state
 
-The project has a working config → client → entry point pipeline, with a fully tested ReAct loop and a complete tool registry:
+The project has a working config → client → entry point pipeline, with a fully tested ReAct loop, a dynamic tool registry, and a live web search capability:
 
-- `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Imports `get_response` from `agent.llm.client`.
+- `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Executes the entire ReAct `run_agent_loop` and prints the final result.
 - `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
 - `src/agent/llm/client.py` — wraps the OpenAI Responses API. Exposes `get_response` (string prompts) and `get_chat_response` (handles list of message dicts/tools).
 - `src/agent/models/messages.py` — Pydantic models for `TextMessage`, `FunctionCallItem`, `FunctionCallOutputItem`, and `ConversationState` matching the modern Responses API schema.
-- `src/agent/loop.py` — Fully implemented ReAct loop with support for tool call execution, multi-turn state accumulation, and observation injection (currently stubbed tools).
+- `src/agent/loop.py` — Fully implemented ReAct loop with support for tool call execution, multi-turn state accumulation, and observation injection (wired with the real tools registry).
 - `src/agent/tools/registry.py` — Complete tool registry module that automatically parses function signatures, generates strict OpenAI-compliant JSON schemas, registers functions via `@tool`, and validates/executes tool calls.
-- `tests/test_loop.py` — Complete unit test suite verifying simple chat execution and multi-turn tool calling using mock responses.
+- `src/agent/tools/web_search.py` — First real tool implementation (`web_search`) using `ddgs` (without DHT caching, running in direct HTTPS mode) to return formatted search result listings.
+- `tests/test_loop.py` — Complete unit test suite verifying simple chat execution and multi-turn tool calling using mock responses and a mocked offline `DDGS` context manager.
 - `tests/conftest.py` — Empty conftest setup for pytest.
 - `src/agent/__init__.py`, `src/agent/llm/__init__.py`, `src/agent/models/__init__.py`, and `src/agent/tools/__init__.py` exist so packages are importable (utilizing package-level exports and relative imports).
 - `pyproject.toml` has package find rules, and the package has been editably installed using `uv pip install -e .` so that the local package resolves natively inside the `.venv`.
@@ -98,8 +99,8 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Create `tools/web_search.py`** — First real tool implementation using `ddgs` (without the BETA DHT cache enabled, running in standard direct HTTPS request mode).
-2. **Integrate real tools with `loop.py`** — Update `loop.py` to import `execute_tool` and `get_tool_schemas` from `agent.tools`, replacing the hardcoded stubs.
+1. **Create `tools/read_url.py`** — Implement a webpage reader tool using `httpx`, `beautifulsoup4`, and `markdownify` to fetch pages, clean the HTML, convert to markdown, and return text snippets.
+2. **Integrate and Export read_url** — Register it with `@tool`, add it to `tools/__init__.py`, and update unit tests to verify multi-tool executions.
 
 ---
 

@@ -6,37 +6,7 @@ from agent.models.messages import (
     FunctionCallItem,
     FunctionCallOutputItem,
 )
-
-# A temporary tool registry for stubbing out tools during development
-def stub_web_search(query: str) -> str:
-    if "Paris" in query or "paris" in query:
-        return "The population of Paris is 2.1 million."
-    return "No search results found."
-
-STUB_TOOLS = {
-    "web_search": stub_web_search,
-}
-
-def execute_tool(name: str, arguments_json: str) -> str:
-    """Parses JSON arguments and routes tool execution.
-    
-    Rather than raising exceptions and crashing the program, we return error
-    messages as strings so the LLM receives the feedback as an observation 
-    and has a chance to correct itself.
-    """
-    try:
-        args = json.loads(arguments_json)
-    except Exception as e:
-        return f"Error: Invalid JSON arguments: {str(e)}"
-        
-    tool_func = STUB_TOOLS.get(name)
-    if not tool_func:
-        return f"Error: Tool '{name}' not found."
-        
-    try:
-        return tool_func(**args)
-    except Exception as e:
-        return f"Error executing tool: {str(e)}"
+from agent.tools import execute_tool, get_tool_schemas
 
 def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
     # 1. Initialize state before entering the loop
@@ -53,7 +23,7 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
         messages_payload = [msg.model_dump(exclude_none=True) for msg in state.messages]
         
         # 3. Get response from LLM
-        response = client.get_chat_response(messages_payload)
+        response = client.get_chat_response(messages_payload, tools=get_tool_schemas())
         
         # 4. Check for tool calls (function_call items in response.output)
         tool_calls = [

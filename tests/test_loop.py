@@ -3,7 +3,7 @@ from unittest.mock import patch
 from agent.loop import run_agent_loop
 
 class MockResponse:
-    def __init__(self, output_text: str = "", output: list = None):
+    def __init__(self, output_text: str = "", output: list = []):
         self.output_text = output_text
         self.output = output or []
 
@@ -33,7 +33,19 @@ def test_simple_conversation(mock_get_response):
     assert sent_messages[1]["content"] == "What is the capital of France?"
 
 @patch("agent.loop.client.get_chat_response")
-def test_tool_calling_loop(mock_get_chat_response):
+@patch("agent.tools.web_search.DDGS")
+def test_tool_calling_loop(mock_ddgs, mock_get_chat_response):
+    # Mock the context manager __enter__ to return our fake search object
+    mock_ddgs_instance = mock_ddgs.return_value.__enter__.return_value
+
+    # Tell ddgs.text to return our offline mock result
+    mock_ddgs_instance.text.return_value = [
+        {
+            "title": "Population of Paris",
+            "href": "https://en.wikipedia.org/wiki/Population_of_Paris",
+            "body": "The population of Paris is 2.1 million."
+        }
+    ]
     turn_1 = MockResponse(
         output=[
             MockFunctionCall(
