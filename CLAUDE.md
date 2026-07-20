@@ -66,23 +66,22 @@ The loop logic is split between two actors:
 
 ```
 p01-react-agent/
-├── main.py                        # thin entry point only
+├── main.py                        # thin entry point only (working)
 ├── src/
 │   └── agent/
 │       ├── __init__.py
-│       ├── loop.py                # ReAct loop (not yet created)
+│       ├── loop.py                # ReAct loop (completed)
 │       ├── config.py              # pydantic-settings config (working)
 │       ├── llm/
 │       │   ├── __init__.py
-│       │   └── client.py          # Responses API calls (working, needs prompt param)
+│       │   └── client.py          # Responses API calls (working)
 │       ├── tools/
 │       │   ├── __init__.py
-│       │   ├── registry.py        # tool discovery + JSON schema (not yet created)
-│       │   └── web_search.py      # first real tool (not yet created)
+│       │   ├── registry.py        # tool discovery + JSON schema (completed)
+│       │   └── web_search.py      # first real tool (completed)
 │       └── models/
 │           ├── __init__.py
-│           ├── messages.py        # Pydantic: Message, ConversationState (not yet created)
-│           └── tool_call.py       # Pydantic: ToolCall, ToolResult (not yet created)
+│           └── messages.py        # Pydantic: Message, ConversationState (completed)
 ├── evals/
 │   ├── dataset.json               # 20 Q&A eval pairs (not yet created)
 │   ├── metrics.py                 # accuracy, hallucination rate, tool efficiency (not yet created)
