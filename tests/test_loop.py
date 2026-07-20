@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from agent.loop import run_agent_loop
 
