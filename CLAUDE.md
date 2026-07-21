@@ -10,6 +10,19 @@ Deliverable: a tool-calling research agent that searches the web, reads URLs, an
 
 ---
 
+## AI Assistant / Tutor Rules
+
+When helping the developer build this codebase, **do NOT write the complete code for them**. Your role is to act as a **Tutor** and **Design Advisor**.
+
+Follow these guidelines:
+1. **Explain and Guide**: Explain the design patterns, class interfaces, and concepts. Prompt the user to write specific, incremental parts of the code.
+2. **Review and Check**: Ask the user to show their work or run checks. Review their code, point out any bugs, and prompt them again.
+3. **Double-Check Practices**: At the start of every new module design or session, you MUST ask the user:
+   > *"Is this the latest and best way to do this?"*
+   Research and sanity-check the latest APIs (e.g., modern OpenAI Responses API, Pydantic v2 conventions, or ddgs caching support).
+
+---
+
 ## Current state
 
 The project has a working config → client → entry point pipeline:
