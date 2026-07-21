@@ -82,21 +82,22 @@ p01-react-agent/
 │       │   ├── __init__.py
 │       │   └── client.py          # Responses API calls (working, needs prompt param)
 │       ├── tools/
-│       │   ├── __init__.py
+│       │   ├── __init__.py        # Exports registry & tools (not yet created)
 │       │   ├── registry.py        # tool discovery + JSON schema (not yet created)
-│       │   └── web_search.py      # first real tool (not yet created)
+│       │   ├── web_search.py      # first real tool (not yet created)
+│       │   └── read_url.py        # second real tool (not yet created)
 │       └── models/
 │           ├── __init__.py
-│           ├── messages.py        # Pydantic: Message, ConversationState (not yet created)
-│           └── tool_call.py       # Pydantic: ToolCall, ToolResult (not yet created)
+│           └── messages.py        # Pydantic: Message, ConversationState (not yet created)
 ├── evals/
+│   ├── __init__.py
 │   ├── dataset.json               # 20 Q&A eval pairs (not yet created)
-│   ├── metrics.py                 # accuracy, hallucination rate, tool efficiency (not yet created)
-│   └── run_evals.py               # eval CLI entrypoint (not yet created)
+│   ├── metrics.py                 # accuracy, hallucination, and efficiency metrics (not yet created)
+│   ├── report.md                  # generated markdown report (not yet created)
+│   └── run_evals.py               # evaluation runner CLI (not yet created)
 └── tests/
-    ├── conftest.py
-    ├── test_loop.py
-    └── test_tools.py
+    ├── conftest.py                # test suite configuration (not yet created)
+    └── test_loop.py               # agent loop unit tests (not yet created)
 ```
 
 Build order: config → llm/client → models/messages → loop → tools
