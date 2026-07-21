@@ -6,6 +6,30 @@ This is a foundational, hands-on learning project designed to build a complete *
 
 ---
 
+## 🚀 Getting Started (For Learners & Developers)
+
+If you are a developer looking to build your own first-principles understanding of agentic engineering, **do not just copy the completed code on `main`**! 
+
+Instead, checkout the **[`starter-kit`](https://github.com/edgeq/react-agent/tree/starter-kit)** branch to embark on your own hands-on learning experience:
+
+```bash
+git checkout starter-kit
+```
+
+### 🎓 The Pedagogical Philosophy: AI as a Tutor
+The purpose of this project and its accompanying AI coding assistant tools (Claude, Antigravity, Cursor, etc.) is **NOT for the AI agent to write the code for you**. 
+
+Instead, the AI agent is configured to act as a **Tutor and Architecture Guide**:
+* **You write the code**: You struggle through thinking about data structures, API contracts, execution loops, and error handling.
+* **The AI guides & reviews**: The AI explains design patterns, reviews your code, points out edge cases, and prompts you to write each incremental piece.
+
+### 🧰 Built-in Repository Skills
+This repository includes specialized repository skills in [`.agents/skills/`](.agents/skills/) and [`.claude/skills/`](.claude/skills/) to assist your learning journey:
+* **`research-latest`**: Forces the agent to research and verify that you are building with up-to-date APIs (e.g., modern OpenAI Responses API, Pydantic v2 conventions, ddgs scraping patterns) before writing code.
+* **`update-progress`**: Serves as a mechanism for following and maintaining the planned architecture of the project in `CLAUDE.md` and `AGENTS.md` as files are built.
+
+---
+
 ## 🎯 Project Goal
 
 The primary goal of this project is to build a fully capable, tool-calling research agent using **raw API calls only—without relying on any high-level agent frameworks** (like LangChain, LangGraph, or CrewAI). 
