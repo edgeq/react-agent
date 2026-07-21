@@ -67,6 +67,9 @@ Provide step-by-step guidance for the user following this path:
    * Design a 20-question JSON dataset containing diverse categories (direct knowledge, simple search, deep research, and negative constraint hallucination checks).
    * Implement metric evaluators in `metrics.py` (LLM-as-a-judge accuracy, grounding hallucination audit, and loop/tool efficiency).
    * Implement the `run_evals.py` CLI runner that aggregates averages and outputs a detailed Markdown report.
+8. **Step 8: Custom Repository Skills** (`.agents/skills/` & `.claude/skills/`)
+   * Add `research-latest` skill for auditing dynamic APIs, Pydantic v2 schemas, and modern best practices before coding.
+   * Add `update-progress` skill for synchronizing project maps and file trees with physical disk state.
 
 ---
 

@@ -70,8 +70,14 @@ The loop logic is split between two actors:
 
 ## Completed file structure
 
-```
-p01-react-agent/
+├── .agents/
+│   └── skills/
+│       ├── research-latest/      # Research sanity check skill (completed)
+│       └── update-progress/       # Documentation sync skill (completed)
+├── .claude/
+│   └── skills/
+│       ├── research-latest/      # Claude research skill (completed)
+│       └── update-progress/       # Claude doc sync skill (completed)
 ├── main.py                        # CLI entry point
 ├── src/
 │   └── agent/
