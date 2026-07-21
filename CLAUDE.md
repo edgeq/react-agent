@@ -68,48 +68,46 @@ The loop logic is split between two actors:
 
 ---
 
-## Planned file structure
+## Completed file structure
 
 ```
 p01-react-agent/
-├── main.py                        # thin entry point only
+├── main.py                        # CLI entry point
 ├── src/
 │   └── agent/
 │       ├── __init__.py
-│       ├── loop.py                # ReAct loop (not yet created)
+│       ├── loop.py                # ReAct loop (completed)
 │       ├── config.py              # pydantic-settings config (working)
 │       ├── llm/
 │       │   ├── __init__.py
-│       │   └── client.py          # Responses API calls (working, needs prompt param)
+│       │   └── client.py          # Responses API wrapper (completed)
 │       ├── tools/
-│       │   ├── __init__.py
-│       │   ├── registry.py        # tool discovery + JSON schema (not yet created)
-│       │   └── web_search.py      # first real tool (not yet created)
+│       │   ├── __init__.py        # Exports registry & tools (completed)
+│       │   ├── registry.py        # dynamic registry & schema parser (completed)
+│       │   ├── web_search.py      # DuckDuckGo search tool (completed)
+│       │   └── read_url.py        # Webpage markdown reader tool (completed)
 │       └── models/
 │           ├── __init__.py
-│           ├── messages.py        # Pydantic: Message, ConversationState (not yet created)
-│           └── tool_call.py       # Pydantic: ToolCall, ToolResult (not yet created)
+│           └── messages.py        # Pydantic models for Message and ConversationState (completed)
 ├── evals/
-│   ├── dataset.json               # 20 Q&A eval pairs (not yet created)
-│   ├── metrics.py                 # accuracy, hallucination rate, tool efficiency (not yet created)
-│   └── run_evals.py               # eval CLI entrypoint (not yet created)
+│   ├── __init__.py
+│   ├── dataset.json               # 20-question evaluation dataset (completed)
+│   ├── metrics.py                 # accuracy, hallucination, and efficiency metrics (completed)
+│   ├── report.md                  # generated markdown report (completed)
+│   └── run_evals.py               # evaluation runner CLI (completed)
 └── tests/
     ├── conftest.py
-    ├── test_loop.py
-    └── test_tools.py
+    └── test_loop.py               # offline mock unit tests (completed)
 ```
-
-Build order: config → llm/client → models/messages → loop → tools
 
 ---
 
 ## Immediate next steps
 
-1. **Add `prompt` parameter to `get_response()`** — replace the hardcoded prompt so the function is reusable
-2. **Create `models/messages.py`** — Pydantic models for `Message` and `ConversationState`
-3. **Build `loop.py`** — the actual ReAct loop
-4. **Create `tools/registry.py`** — tool discovery + JSON schema generation
-5. **Create `tools/web_search.py`** — first real tool implementation
+1. **Project 01 is 100% Completed!** 🚀
+   * All registries, tools, unit tests, and LLM-as-a-judge evaluations are working.
+2. **Transition to Project 02**:
+   * Ready to start **Project 02: Build and Publish an MCP Server and Client** in TypeScript.
 
 ---
 
