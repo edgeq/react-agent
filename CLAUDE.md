@@ -98,8 +98,11 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Create `tools/read_url.py`** — Implement a webpage reader tool using `httpx`, `beautifulsoup4`, and `markdownify` to fetch pages, clean the HTML, convert to markdown, and return text snippets.
-2. **Integrate and Export read_url** — Register it with `@tool`, add it to `tools/__init__.py`, and update unit tests to verify multi-tool executions.
+1. **Project 01 is 100% Completed!** 🚀
+   * All dynamic registries, web search and read URL tools, robust offline unit testing, and custom LLM-as-a-judge evaluation metrics are implemented and verified.
+2. **Transition to Project 02**:
+   * The next project in the syllabus is **Project 02: Build and Publish an MCP (Model Context Protocol) Server and Client** in TypeScript (Week 3).
+   * Prepare to initialize the TypeScript workspace for the MCP project.
 
 ---
 
