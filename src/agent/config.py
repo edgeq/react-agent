@@ -1,9 +1,3 @@
-from pydantic_settings import BaseSettings
-
-class Settings(BaseSettings):
-    openai_api_key: str
-    model: str = "gpt-5.4-mini"
-
-    model_config = {"env_file": ".env"}
-
-settings = Settings()  # type: ignore[call-arg]
+# TODO: Implement a Settings class inheriting from Pydantic's BaseSettings.
+# This should load your configuration values (openai_api_key, model) from your local .env file.
+# Finally, export an initialized `settings` instance at the bottom of the file.
