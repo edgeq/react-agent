@@ -2,30 +2,36 @@
 
 ## What this project is
 
-Part of the **Agentic Engineering Bootcamp v2.3** (26 weeks, 21 projects). This is **Project 1, Phase 1: Foundations**.
+Part of the **Agentic Engineering Bootcamp v2.1** (26 weeks, 21 projects). This is **Project 1, Phase 1: Foundations**.
 
-The goal is to build a ReAct (Reasoning + Acting) agent using **raw API calls only — no agent frameworks** (although some libraries are used). This is intentional: the purpose is to understand what frameworks abstract away before using them in later projects (LangGraph in P5, OpenAI Agents SDK in P7, etc.).
+The goal is to build a ReAct (Reasoning + Acting) agent using **raw API calls only — no agent frameworks**. This is intentional: the purpose is to understand what frameworks abstract away before using them in later projects (LangGraph in P5, OpenAI Agents SDK in P7, etc.).
 
 Deliverable: a tool-calling research agent that searches the web, reads URLs, and synthesizes findings into structured reports. Includes a 20-question evaluation suite measuring answer accuracy, hallucination rate, and tool-call efficiency.
 
 ---
 
+## AI Assistant / Tutor Rules
+
+When helping the developer build this codebase, **do NOT write the complete code for them**. Your role is to act as a **Tutor** and **Design Advisor**.
+
+Follow these guidelines:
+1. **Explain and Guide**: Explain the design patterns, class interfaces, and concepts. Prompt the user to write specific, incremental parts of the code.
+2. **Review and Check**: Ask the user to show their work or run checks. Review their code, point out any bugs, and prompt them again.
+3. **Double-Check Practices**: At the start of every new module design or session, you MUST ask the user:
+   > *"Is this the latest and best way to do this?"*
+   Research and sanity-check the latest APIs (e.g., modern OpenAI Responses API, Pydantic v2 conventions, or ddgs caching support).
+
+---
+
 ## Current state
 
-The project has a working config → client → entry point pipeline, with a fully tested ReAct loop, a dynamic tool registry, and a live web search capability:
+The project has a working config → client → entry point pipeline:
 
-- `main.py` — entry point that accepts an optional CLI argument (`sys.argv[1]`) as the user prompt, with a default fallback. Executes the entire ReAct `run_agent_loop` and prints the final result.
+- `main.py` — thin entry point. Imports `get_response` from `agent.llm.client`, calls it in a `main()` function with `__name__` guard.
 - `src/agent/config.py` — `pydantic-settings` `Settings` class. Loads `openai_api_key` and `model` from `.env`. Uses Pydantic v2 `model_config` style.
-- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Exposes `get_response` (string prompts) and `get_chat_response` (handles list of message dicts/tools).
-- `src/agent/models/messages.py` — Pydantic models for `TextMessage`, `FunctionCallItem`, `FunctionCallOutputItem`, and `ConversationState` matching the modern Responses API schema.
-- `src/agent/loop.py` — Fully implemented ReAct loop with support for tool call execution, multi-turn state accumulation, and observation injection (wired with the real tools registry).
-- `src/agent/tools/registry.py` — Complete tool registry module that automatically parses function signatures, generates strict OpenAI-compliant JSON schemas, registers functions via `@tool`, and validates/executes tool calls.
-- `src/agent/tools/web_search.py` — First real tool implementation (`web_search`) using `ddgs` (without DHT caching, running in direct HTTPS mode) to return formatted search result listings.
-- `tests/test_loop.py` — Complete unit test suite verifying simple chat execution and multi-turn tool calling using mock responses and a mocked offline `DDGS` context manager.
-- `tests/conftest.py` — Empty conftest setup for pytest.
-- `src/agent/__init__.py`, `src/agent/llm/__init__.py`, `src/agent/models/__init__.py`, and `src/agent/tools/__init__.py` exist so packages are importable (utilizing package-level exports and relative imports).
-- `pyproject.toml` has package find rules, and the package has been editably installed using `uv pip install -e .` so that the local package resolves natively inside the `.venv`.
-- `.vscode/settings.json` configured with `"python.analysis.extraPaths": ["./src"]` to resolve import errors in VS Code Pylance.
+- `src/agent/llm/client.py` — wraps the OpenAI Responses API. Creates an `OpenAI` client using `settings.openai_api_key`, exposes `get_response()`. Prompt is still hardcoded — needs a `prompt` parameter next.
+- `src/agent/__init__.py` and `src/agent/llm/__init__.py` exist so the package is importable.
+- `pyproject.toml` has `[tool.setuptools.packages.find] where = ["src"]` so `uv run` resolves the `agent` package.
 - `.claude/hooks/` — `SessionStart` and `SessionEnd` hooks that auto-update CLAUDE.md via headless `claude -p`.
 
 ---
@@ -66,22 +72,23 @@ The loop logic is split between two actors:
 
 ```
 p01-react-agent/
-├── main.py                        # thin entry point only (working)
+├── main.py                        # thin entry point only
 ├── src/
 │   └── agent/
 │       ├── __init__.py
-│       ├── loop.py                # ReAct loop (completed)
+│       ├── loop.py                # ReAct loop (not yet created)
 │       ├── config.py              # pydantic-settings config (working)
 │       ├── llm/
 │       │   ├── __init__.py
-│       │   └── client.py          # Responses API calls (working)
+│       │   └── client.py          # Responses API calls (working, needs prompt param)
 │       ├── tools/
 │       │   ├── __init__.py
-│       │   ├── registry.py        # tool discovery + JSON schema (completed)
-│       │   └── web_search.py      # first real tool (completed)
+│       │   ├── registry.py        # tool discovery + JSON schema (not yet created)
+│       │   └── web_search.py      # first real tool (not yet created)
 │       └── models/
 │           ├── __init__.py
-│           └── messages.py        # Pydantic: Message, ConversationState (completed)
+│           ├── messages.py        # Pydantic: Message, ConversationState (not yet created)
+│           └── tool_call.py       # Pydantic: ToolCall, ToolResult (not yet created)
 ├── evals/
 │   ├── dataset.json               # 20 Q&A eval pairs (not yet created)
 │   ├── metrics.py                 # accuracy, hallucination rate, tool efficiency (not yet created)
@@ -98,11 +105,11 @@ Build order: config → llm/client → models/messages → loop → tools
 
 ## Immediate next steps
 
-1. **Project 01 is 100% Completed!** 🚀
-   * All dynamic registries, web search and read URL tools, robust offline unit testing, and custom LLM-as-a-judge evaluation metrics are implemented and verified.
-2. **Transition to Project 02**:
-   * The next project in the syllabus is **Project 02: Build and Publish an MCP (Model Context Protocol) Server and Client** in TypeScript (Week 3).
-   * Prepare to initialize the TypeScript workspace for the MCP project.
+1. **Add `prompt` parameter to `get_response()`** — replace the hardcoded prompt so the function is reusable
+2. **Create `models/messages.py`** — Pydantic models for `Message` and `ConversationState`
+3. **Build `loop.py`** — the actual ReAct loop
+4. **Create `tools/registry.py`** — tool discovery + JSON schema generation
+5. **Create `tools/web_search.py`** — first real tool implementation
 
 ---
 
