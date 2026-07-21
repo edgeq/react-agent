@@ -1,4 +1,5 @@
 import json
+from typing import Any
 from agent.llm import client
 from agent.models.messages import (
     ConversationState,
@@ -8,7 +9,9 @@ from agent.models.messages import (
 )
 from agent.tools import execute_tool, get_tool_schemas
 
-def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
+def run_agent_loop(user_prompt: str, max_iterations: int = 5, return_metadata: bool = False) -> str | dict[str, Any]:
+    #0. Track tool outputs
+    tool_outputs = []
     # 1. Initialize state before entering the loop
     state = ConversationState()
     state.messages.append(
@@ -51,6 +54,7 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
                 # Print a short preview (e.g., first 150 characters) so it doesn't clutter the terminal
                 print(f"👁️  Observation: {output_str[:150]}...")
                 # Add the output (observation) to history
+                tool_outputs.append(output_str)
                 state.messages.append(
                     FunctionCallOutputItem(
                         call_id=tool_call.call_id,
@@ -66,9 +70,22 @@ def run_agent_loop(user_prompt: str, max_iterations: int = 5) -> str:
             state.messages.append(
                 TextMessage(role="assistant", content=response.output_text)
             )
-            return response.output_text
+            if return_metadata:
+                return {
+                    "output": response.output_text,
+                    "messages": state.messages,
+                    "tool_outputs": tool_outputs,
+                }
+            else:
+                return response.output_text
             
         # If we got no tool calls and no output text, break out of loop
         break
-
-    return ""
+    if return_metadata:
+        return {
+            "output": response.output_text,
+            "messages": state.messages,
+            "tool_outputs": tool_outputs,
+        }
+    else:
+        return ""

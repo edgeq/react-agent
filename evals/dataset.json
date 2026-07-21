@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "category": "direct_knowledge",
+    "question": "What is the capital of France?",
+    "expected_answer": "Paris"
+  },
+  {
+    "id": 2,
+    "category": "direct_knowledge",
+    "question": "How many hours are there in a standard non-leap year?",
+    "expected_answer": "8760 hours (365 days * 24 hours)"
+  },
+  {
+    "id": 3,
+    "category": "direct_knowledge",
+    "question": "Who wrote the classic play 'Romeo and Juliet'?",
+    "expected_answer": "William Shakespeare"
+  },
+  {
+    "id": 4,
+    "category": "direct_knowledge",
+    "question": "What is the chemical symbol for the element gold?",
+    "expected_answer": "Au"
+  },
+  {
+    "id": 5,
+    "category": "direct_knowledge",
+    "question": "What is the primary function of mitochondria in eukaryotic cells?",
+    "expected_answer": "To generate chemical energy in the form of Adenosine Triphosphate (ATP) through cellular respiration."
+  },
+  {
+    "id": 6,
+    "category": "simple_search",
+    "question": "Who won the Best Picture Oscar at the 97th Academy Awards ceremony held in March 2025?",
+    "expected_answer": "Anora"
+  },
+  {
+    "id": 7,
+    "category": "simple_search",
+    "question": "Who is the Prime Minister of the United Kingdom as of 2026?",
+    "expected_answer": "Keir Starmer"
+  },
+  {
+    "id": 8,
+    "category": "simple_search",
+    "question": "Who won the NFL Super Bowl LIX (59) played on February 9, 2025, and what was the final score?",
+    "expected_answer": "The Philadelphia Eagles won, defeating the Kansas City Chiefs with a final score of 40-22."
+  },
+  {
+    "id": 9,
+    "category": "simple_search",
+    "question": "Which country hosted the COP29 United Nations Climate Change Conference in November 2024?",
+    "expected_answer": "Azerbaijan (specifically Baku)"
+  },
+  {
+    "id": 10,
+    "category": "simple_search",
+    "question": "What is the name of the NASA spacecraft launched in October 2024 to explore Jupiter's moon Europa?",
+    "expected_answer": "Europa Clipper"
+  },
+  {
+    "id": 11,
+    "category": "deep_research",
+    "question": "Find the official digital streaming release date of the album 'No Name' by Jack White in 2024, and list the first 3 track names on it.",
+    "expected_answer": "The album 'No Name' was officially released to streaming platforms on August 2, 2024. The first three tracks are 'Old Scratch Blues', 'Bless Yourself', and 'That's How I'm Feeling'."
+  },
+  {
+    "id": 12,
+    "category": "deep_research",
+    "question": "Find the date of the SpaceX Starship Flight 5 test in 2024, and describe the outcome of the Super Heavy booster recovery.",
+    "expected_answer": "SpaceX Starship Flight 5 took place on October 13, 2024. The Super Heavy booster was successfully caught mid-air by the mechanical 'chopstick' arms of the launch tower (Mechazilla) at the launch site."
+  },
+  {
+    "id": 13,
+    "category": "deep_research",
+    "question": "What was the theatrical release date of the film 'Mickey 17' directed by Bong Joon-ho in the United States, and who plays the lead character Mickey Barnes?",
+    "expected_answer": "The film 'Mickey 17' was released in U.S. theaters on March 7, 2025. The lead character Mickey Barnes is played by Robert Pattinson."
+  },
+  {
+    "id": 14,
+    "category": "deep_research",
+    "question": "Search for the 2024 Nobel Prize in Physics, find who won it, and state what specific artificial neural network model John Hopfield is famous for developing.",
+    "expected_answer": "The 2024 Nobel Prize in Physics was awarded to John J. Hopfield and Geoffrey E. Hinton. John Hopfield is famous for developing the associative memory network known as the Hopfield Network."
+  },
+  {
+    "id": 15,
+    "category": "deep_research",
+    "question": "Identify the winner of the Album of the Year at the 68th Grammy Awards held in February 2026, including the title of the winning album and the recording artist.",
+    "expected_answer": "The Album of the Year at the 68th Grammy Awards was won by Bad Bunny for his album 'DeBí TiRAR MáS FOToS'."
+  },
+  {
+    "id": 16,
+    "category": "negative_constraint",
+    "question": "What is the migration pattern of the flying penguin species discovered in Madagascar in 2025?",
+    "expected_answer": "There is no flying penguin species discovered in Madagascar in 2025. Penguins are flightless birds and do not naturally inhabit Madagascar, so this query is based on a fictional or false premise."
+  },
+  {
+    "id": 17,
+    "category": "negative_constraint",
+    "question": "Which country won the FIFA Men's World Cup in the year 2023?",
+    "expected_answer": "There was no FIFA Men's World Cup in the year 2023. The tournament was held in 2022 (won by Argentina) and the next is scheduled for 2026."
+  },
+  {
+    "id": 18,
+    "category": "negative_constraint",
+    "question": "What are the therapeutic side effects of the medical drug 'Zibrofilene' approved by the FDA in 2025?",
+    "expected_answer": "There is no FDA-approved drug named Zibrofilene; the substance is non-existent, and the query is based on a false premise."
+  },
+  {
+    "id": 19,
+    "category": "negative_constraint",
+    "question": "Who was elected President of the United States in the year 2022?",
+    "expected_answer": "There was no United States presidential election in the year 2022. U.S. presidential elections are held in even years divisible by 4 (such as 2020 and 2024); 2022 was a midterm election year."
+  },
+  {
+    "id": 20,
+    "category": "negative_constraint",
+    "question": "What is the speed of sound in a perfect vacuum, and how does it compare to its speed in air?",
+    "expected_answer": "Sound cannot travel in a perfect vacuum because sound waves require a physical medium (like air, water, or solids) to propagate. Therefore, the speed of sound in a vacuum is zero, compared to approximately 343 meters per second in air at room temperature."
+  }
+]
